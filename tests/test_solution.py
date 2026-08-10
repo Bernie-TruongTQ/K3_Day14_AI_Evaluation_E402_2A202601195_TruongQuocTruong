@@ -171,10 +171,86 @@ class TestContextMetrics(unittest.TestCase):
             "Paris is the capital city of France in Europe",    # relevant, buried
         ]
         before = self.evaluator.evaluate_context_precision(retrieved, expected)
-        after = self.evaluator.evaluate_context_precision(
-            rerank(retrieved, expected), expected
-        )
+        try:
+            reranked = rerank(retrieved, expected)
+        except NotImplementedError:
+            self.skipTest("Exercise 3.5 reranking is optional bonus work")
+        after = self.evaluator.evaluate_context_precision(reranked, expected)
         self.assertGreaterEqual(after, before)
+
+
+class TestRetrievalMetricWiring(unittest.TestCase):
+    """The two retrieval metrics must be connected to the full benchmark."""
+
+    def setUp(self):
+        self.evaluator = RAGASEvaluator()
+
+    def test_run_full_eval_connects_optional_retrieval_metrics(self):
+        kwargs = {
+            "answer": "Paris is the capital of France",
+            "question": "What is the capital of France?",
+            "context": "Paris is the capital city of France.",
+            "expected": "Paris is the capital of France",
+        }
+        without_retrieval = self.evaluator.run_full_eval(**kwargs)
+        with_retrieval = self.evaluator.run_full_eval(
+            **kwargs,
+            contexts=["Paris is the capital city of France."],
+        )
+
+        self.assertIsNone(without_retrieval.context_recall)
+        self.assertIsNone(without_retrieval.context_precision)
+        self.assertIsNotNone(with_retrieval.context_recall)
+        self.assertIsNotNone(with_retrieval.context_precision)
+
+    def test_runner_forwards_retrieved_contexts(self):
+        received: list[list[str] | None] = []
+
+        class RecordingEvaluator:
+            def run_full_eval(
+                self,
+                answer,
+                question,
+                context,
+                expected,
+                contexts=None,
+            ):
+                received.append(contexts)
+                return EvalResult(
+                    qa_pair=_make_qa(question, expected, context),
+                    actual_answer=answer,
+                    faithfulness=1.0,
+                    relevance=1.0,
+                    completeness=1.0,
+                    passed=True,
+                )
+
+        pair = QAPair(
+            question="What is AI?",
+            expected_answer="AI is artificial intelligence",
+            context="AI means artificial intelligence",
+            retrieved_contexts=["AI means artificial intelligence"],
+        )
+        BenchmarkRunner().run(
+            [pair],
+            lambda _: "AI is artificial intelligence",
+            RecordingEvaluator(),
+        )
+
+        self.assertEqual(received, [pair.retrieved_contexts])
+
+    def test_report_includes_retrieval_averages(self):
+        first = _make_eval_result()
+        first.context_recall = 1.0
+        first.context_precision = 0.5
+        second = _make_eval_result()
+        second.context_recall = 0.5
+        second.context_precision = 1.0
+
+        report = BenchmarkRunner().generate_report([first, second])
+
+        self.assertAlmostEqual(report["avg_context_recall"], 0.75)
+        self.assertAlmostEqual(report["avg_context_precision"], 0.75)
 
 
 class TestBenchmarkRunner(unittest.TestCase):

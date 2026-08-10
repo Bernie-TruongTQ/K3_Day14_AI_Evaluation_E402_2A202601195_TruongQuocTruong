@@ -14,10 +14,13 @@ Key concepts from lecture:
     - Continuous Improvement Loop: Evaluate → Analyze → Improve → Augment → Repeat
 
 Instructions:
-    1. Fill in every section marked with TODO.
-    2. Do NOT change class/function signatures.
+    1. Fill in every required section marked with TODO.
+    2. Do NOT change class/function signatures. The optional ``contexts``
+       parameter in ``run_full_eval`` is part of the required interface.
     3. Copy this file to solution/solution.py when done.
     4. Run: pytest tests/ -v
+
+The reranking helper is an optional bonus exercise and may remain unimplemented.
 """
 
 from __future__ import annotations
@@ -238,9 +241,11 @@ class RAGASEvaluator:
         question: str,
         context: str,
         expected: str,
+        contexts: list[str] | None = None,
     ) -> EvalResult:
         """
-        Run all three evaluations and combine into an EvalResult.
+        Run the three answer-side evaluations and, when ``contexts`` is
+        supplied, both retrieval-side evaluations.
 
         passed = True if all three scores >= 0.5.
 
@@ -249,6 +254,13 @@ class RAGASEvaluator:
             relevance < 0.3     → "irrelevant"
             completeness < 0.3  → "incomplete"
             otherwise if failed → "off_topic"
+
+        Retrieval wiring:
+            contexts is None → context_recall and context_precision stay None
+            contexts provided → evaluate and store both retrieval metrics
+
+        The two retrieval metrics diagnose the retriever and do not change the
+        three-metric ``passed`` rule or ``overall_score()``.
 
         Returns:
             EvalResult with all fields populated.
@@ -271,7 +283,7 @@ def rerank_by_overlap(contexts: list[str], query: str) -> list[str]:
     Hint: sorted(contexts, key=lambda c: len(_tokenize(c) & _tokenize(query)),
                  reverse=True)
     """
-    # TODO (Exercise 3.5): implement the reranker
+    # TODO (Bonus — Exercise 3.5): implement the reranker
     raise NotImplementedError("Implement rerank_by_overlap")
 
 
@@ -388,7 +400,9 @@ class BenchmarkRunner:
         Returns:
             List of EvalResult, one per qa_pair.
         """
-        # TODO: for each pair, call agent_fn(pair.question), then evaluator.run_full_eval
+        # TODO: for each pair, call agent_fn(pair.question), then run_full_eval.
+        # Pass pair.retrieved_contexts as the optional contexts argument and
+        # preserve the original pair on the returned EvalResult.
         raise NotImplementedError("Implement BenchmarkRunner.run")
 
     def generate_report(self, results: list[EvalResult]) -> dict[str, Any]:
@@ -403,8 +417,13 @@ class BenchmarkRunner:
                 "avg_faithfulness": float,
                 "avg_relevance":    float,
                 "avg_completeness": float,
+                "avg_context_recall": float | None,
+                "avg_context_precision": float | None,
                 "failure_types":    dict[str, int],  # type → count
             }
+
+        Average only non-None retrieval scores. Return None for a retrieval
+        average when no result contains that metric.
         """
         # TODO
         raise NotImplementedError("Implement generate_report")

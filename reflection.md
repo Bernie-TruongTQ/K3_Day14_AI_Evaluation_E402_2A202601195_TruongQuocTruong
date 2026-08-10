@@ -1,203 +1,255 @@
 # Day 14 — Reflection
+
 ## Evaluation Report & Failure Analysis
+
+Dùng kết quả thật trong `artifacts/benchmark_results.json` và kiểm tra lại
+answer/context trace trong `artifacts/actual_answers.json` trước khi kết luận.
 
 ---
 
 ## 1. Benchmark Results Summary
 
-Paste results từ Exercise 3.2 và tóm tắt:
-
 **Overall pass rate:** ____%
 
-**Average scores:**
-
-| Metric | Average | Min | Max | Std Dev |
-|--------|---------|-----|-----|---------|
+| Metric | Average | Min | Max | Nhận xét |
+|---|---:|---:|---:|---|
+| Context Recall | | | | |
+| Context Precision | | | | |
 | Faithfulness | | | | |
 | Relevance | | | | |
 | Completeness | | | | |
 | Overall Score | | | | |
 
-**Score interpretation (theo bài giảng):**
-- Bao nhiêu metrics ở Good (0.8–1.0)? ___
-- Bao nhiêu metrics ở Needs Work (0.6–0.8)? ___
-- Bao nhiêu metrics ở Significant Issues (<0.6)? ___
+**Score interpretation**
 
-**Failure type distribution:**
+- Metrics/cases ở mức Good (0.8–1.0): ____
+- Metrics/cases ở mức Needs Work (0.6–0.8): ____
+- Metrics/cases ở mức Significant Issues (<0.6): ____
+
+**Failure type distribution**
 
 | Failure Type | Count | Percentage |
-|--------------|-------|------------|
+|---|---:|---:|
 | hallucination | | |
 | irrelevant | | |
 | incomplete | | |
 | off_topic | | |
 | refusal | | |
 
+**Chẩn đoán tổng quan:** Vấn đề chính nằm ở retrieval, generation hay cả hai?
+Dùng ít nhất hai metrics để bảo vệ kết luận.
+
+> *Câu trả lời:*
+
 ---
 
-## 2. Top 3 Worst Failures — 5 Whys Analysis
+## 2. Top 3 Worst Failures — 5 Whys
 
-Theo bài giảng: "Phân loại failure TRƯỚC KHI fix. Đừng fix từng failure riêng lẻ — CLUSTER rồi fix root cause."
+Phân loại failure trước khi đề xuất fix. Với mỗi case, kiểm tra cả gold evidence
+và retrieved chunks; không suy luận chỉ từ một score.
 
 ### Failure 1
 
-**Question:** *paste question here*
+**ID và question:**
 
-**Agent Answer:** *paste actual output*
+> *Điền:*
 
-**Scores:** Faithfulness: ___ | Relevance: ___ | Completeness: ___ | Overall: ___
+**Expected answer:**
 
-**5 Whys Analysis:**
+> *Điền:*
+
+**Actual answer:**
+
+> *Điền:*
+
+**Scores:** Context Recall: ____ | Context Precision: ____ | Faithfulness: ____ |
+Relevance: ____ | Completeness: ____ | Overall: ____
+
+**Evidence inspection:** Retriever lấy đúng/thiếu/thừa chunks nào?
+
+> *Câu trả lời:*
+
 | Level | Question | Answer |
-|-------|----------|--------|
-| Symptom | Vấn đề là gì? | |
-| Why 1 | Tại sao xảy ra? | |
-| Why 2 | Tại sao Why 1 xảy ra? | |
-| Why 3 | Tại sao Why 2 xảy ra? | |
-| Why 4 | Root cause là gì? | |
+|---|---|---|
+| Symptom | Vấn đề quan sát được là gì? | |
+| Why 1 | Tại sao symptom xảy ra? | |
+| Why 2 | Tại sao nguyên nhân trên xảy ra? | |
+| Why 3 | Tại sao vấn đề đó chưa được ngăn chặn? | |
+| Why 4 | Tại sao cơ chế hiện tại chưa phát hiện hoặc xử lý được? | |
+| Why 5 | Root cause có thể hành động được là gì? | |
 
-**Root cause (from `find_root_cause()`):**
-> *Output của function:*
+**Root cause từ `find_root_cause()`:**
 
-**Bạn có đồng ý với root cause suggestion không? Tại sao?**
-> *Your answer:*
+> *Paste output:*
 
-**Proposed fix (cụ thể, actionable):**
-> *Your answer: 1–2 actions cụ thể*
+**Bạn đồng ý hay không? Dẫn evidence từ trace:**
 
----
+> *Câu trả lời:*
+
+**Proposed fix cụ thể:**
+
+> *Câu trả lời:*
 
 ### Failure 2
 
-**Question:** *paste question here*
+**ID và question:**
 
-**Agent Answer:** *paste actual output*
+> *Điền:*
 
-**Scores:** Faithfulness: ___ | Relevance: ___ | Completeness: ___ | Overall: ___
+**Expected answer:**
 
-**5 Whys Analysis:**
+> *Điền:*
+
+**Actual answer:**
+
+> *Điền:*
+
+**Scores:** Context Recall: ____ | Context Precision: ____ | Faithfulness: ____ |
+Relevance: ____ | Completeness: ____ | Overall: ____
+
+**Evidence inspection:**
+
+> *Câu trả lời:*
+
 | Level | Question | Answer |
-|-------|----------|--------|
-| Symptom | | |
-| Why 1 | | |
-| Why 2 | | |
-| Why 3 | | |
-| Why 4 | | |
+|---|---|---|
+| Symptom | Vấn đề quan sát được là gì? | |
+| Why 1 | Tại sao symptom xảy ra? | |
+| Why 2 | Tại sao nguyên nhân trên xảy ra? | |
+| Why 3 | Tại sao vấn đề đó chưa được ngăn chặn? | |
+| Why 4 | Tại sao cơ chế hiện tại chưa phát hiện hoặc xử lý được? | |
+| Why 5 | Root cause có thể hành động được là gì? | |
 
-**Root cause:**
-> *Your answer:*
+**Root cause và proposed fix:**
 
-**Proposed fix:**
-> *Your answer:*
-
----
+> *Câu trả lời:*
 
 ### Failure 3
 
-**Question:** *paste question here*
+**ID và question:**
 
-**Agent Answer:** *paste actual output*
+> *Điền:*
 
-**Scores:** Faithfulness: ___ | Relevance: ___ | Completeness: ___ | Overall: ___
+**Expected answer:**
 
-**5 Whys Analysis:**
+> *Điền:*
+
+**Actual answer:**
+
+> *Điền:*
+
+**Scores:** Context Recall: ____ | Context Precision: ____ | Faithfulness: ____ |
+Relevance: ____ | Completeness: ____ | Overall: ____
+
+**Evidence inspection:**
+
+> *Câu trả lời:*
+
 | Level | Question | Answer |
-|-------|----------|--------|
-| Symptom | | |
-| Why 1 | | |
-| Why 2 | | |
-| Why 3 | | |
-| Why 4 | | |
+|---|---|---|
+| Symptom | Vấn đề quan sát được là gì? | |
+| Why 1 | Tại sao symptom xảy ra? | |
+| Why 2 | Tại sao nguyên nhân trên xảy ra? | |
+| Why 3 | Tại sao vấn đề đó chưa được ngăn chặn? | |
+| Why 4 | Tại sao cơ chế hiện tại chưa phát hiện hoặc xử lý được? | |
+| Why 5 | Root cause có thể hành động được là gì? | |
 
-**Root cause:**
-> *Your answer:*
+**Root cause và proposed fix:**
 
-**Proposed fix:**
-> *Your answer:*
+> *Câu trả lời:*
 
 ---
 
 ## 3. Failure Clustering
 
-Theo bài giảng: "Fix 1 root cause giải quyết nhiều failures cùng lúc."
+Một root cause có thể tạo ra nhiều failures. Nhóm theo nguyên nhân có thể sửa,
+không chỉ nhóm theo tên metric.
 
-**Cluster Analysis:**
-
-| Cluster | Root Cause | Failures in cluster | Priority |
-|---------|-----------|--------------------:|----------|
+| Cluster | Root Cause | Failure IDs | Priority |
+|---|---|---|---|
 | 1 | | | High/Medium/Low |
 | 2 | | | |
 | 3 | | | |
 
-**Nếu chỉ fix 1 cluster, bạn chọn cluster nào? Tại sao?**
-> *Your answer:*
+**Nếu chỉ được sửa một cluster, bạn chọn cluster nào và vì sao?**
+
+> *Câu trả lời:*
 
 ---
 
-## 4. Improvement Log (from `generate_improvement_log`)
+## 4. Improvement Log
 
 Paste output của `generate_improvement_log()`:
 
-```
-[paste markdown table output here]
+```text
+[paste Markdown table here]
 ```
 
-**Thêm 3 improvement suggestions từ `generate_improvement_suggestions()`:**
-1. ___
-2. ___
-3. ___
+**Ba improvement suggestions ưu tiên**
+
+1. ____
+2. ____
+3. ____
+
+Với mỗi suggestion, nêu metric dự kiến thay đổi và cách đo lại.
+
+| Suggestion | Target metric | Verification method |
+|---|---|---|
+| | | |
+| | | |
+| | | |
 
 ---
 
 ## 5. Regression Testing Strategy
 
-### CI/CD Integration
+**Câu 1: Khi nào chạy `run_regression()` trong production workflow?**
 
-**Câu 1: Khi nào chạy `run_regression()` trong production system?**
-> *Mô tả CI/CD integration point (ví dụ: trước mỗi merge to main, sau mỗi prompt change, etc.):*
+> *Câu trả lời:*
 
-**Câu 2: Threshold regression 0.05 có phù hợp domain của bạn không?**
-> *Strict hơn hay loose hơn? Tại sao?*
+**Câu 2: Threshold drop 0.05 có phù hợp Student Services không? Vì sao?**
 
-**Câu 3: Khi phát hiện regression — block deployment hay chỉ alert?**
-> *Your answer + giải thích trade-off:*
+> *Câu trả lời:*
 
-**Câu 4: Eval pipeline nên chạy ở đâu trong CI/CD flow?**
+**Câu 3: Metric/failure nào phải block deployment, metric nào chỉ alert?**
 
+> *Câu trả lời:*
+
+**Câu 4: Điền evaluation stages vào flow.**
+
+```text
+Code/prompt/retrieval change → [________] → [________] → [________] → Deploy
 ```
-Code change → [___] → [___] → [___] → Deploy
-              (bước 1)   (bước 2)   (bước 3)
-```
-> *Điền 3 bước eval vào flow trên:*
+
+> *Giải thích:*
 
 ---
 
 ## 6. Continuous Improvement Loop
 
-Theo bài giảng: Evaluate → Analyze → Improve → Augment (add to benchmark) → lặp lại
+```text
+Evaluate → Analyze → Improve → Augment benchmark → Repeat
+```
 
-**Sau lab hôm nay, 3 actions tiếp theo bạn sẽ làm để improve agent:**
-
-| Priority | Action | Metric sẽ improve | Expected impact |
-|----------|--------|-------------------|-----------------|
+| Priority | Action | Metric dự kiến cải thiện | Expected impact |
+|---:|---|---|---|
 | 1 | | | |
 | 2 | | | |
 | 3 | | | |
 
-**Bạn sẽ thêm failure cases nào vào benchmark cho sprint tiếp theo?**
-> *List 2–3 cases mới cần thêm:*
+**Hai hoặc ba failure cases nào cần thêm vào benchmark ở vòng tiếp theo?**
+
+> *Câu trả lời:*
 
 ---
 
-## 7. Framework Reflection
+## 7. Final Reflection
 
-**Framework bạn đã dùng trong lab:** _____ (RAGAS-inspired heuristic)
+**Điều gì trong kết quả benchmark trái với dự đoán ban đầu của bạn?**
 
-**Nếu dùng trong production, bạn sẽ chọn framework nào? Tại sao?**
-> *Tham khảo trade-offs table trong bài giảng:*
+> *Câu trả lời:*
 
-| Tiêu chí | Lý do chọn |
-|----------|------------|
-| Focus phù hợp vì... | |
-| CI/CD integration vì... | |
-| Team workflow vì... | |
+**Word-overlap heuristics trong lab có giới hạn gì? Nếu đưa hệ thống vào
+production, bạn sẽ thay hoặc bổ sung metric nào?**
+
+> *Câu trả lời:*
